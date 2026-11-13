@@ -60,7 +60,7 @@ $venues = $venueStmt->fetchAll(PDO::FETCH_ASSOC);
 
     <section class="event-form-card">
 
-<form action="store.php" method="POST">
+<form action="store.php" method="POST" enctype="multipart/form-data">
             <div class="form-section">
                 <h2>Thông tin cơ bản</h2>
 
@@ -102,7 +102,31 @@ $venues = $venueStmt->fetchAll(PDO::FETCH_ASSOC);
                     ></textarea>
                 </div>
             </div>
+                <div class="form-group event-cover-upload">
+                    <label for="cover_image">Ảnh đại diện sự kiện</label>
 
+                    <input
+                        type="file"
+                        id="cover_image"
+                        name="cover_image"
+                        accept="image/jpeg,image/png,image/webp"
+                    >
+
+                    <small>Chấp nhận JPG, PNG, WebP. Kích thước tối đa 5 MB.</small>
+
+                    <div id="coverPreviewContainer" hidden>
+                        <img
+                            id="coverPreview"
+                            src=""
+                            alt="Ảnh xem trước"
+                            style="display:block; max-width:300px; max-height:180px; margin-top:12px; border-radius:12px; object-fit:cover;"
+                        >
+
+                        <button type="button" id="removeCoverImage" class="reset-button">
+                            Xóa ảnh đã chọn
+                        </button>
+                    </div>
+                </div>
             <div class="form-section">
                 <h2>Địa điểm tổ chức</h2>
 
