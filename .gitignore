@@ -1,16 +1,11 @@
 
 # Cấu hình kết nối cơ sở dữ liệu riêng trên từng máy
-/config/database.php
+
 /config/.env
 /.env
 /.env.*
 
 # Ảnh và tệp được tải lên trong quá trình sử dụng
-/uploads/*
-!/uploads/.gitkeep
-!/uploads/speakers/
-/uploads/speakers/*
-!/uploads/speakers/.gitkeep
 
 # Tệp nhật ký và dữ liệu tạm
 *.log
