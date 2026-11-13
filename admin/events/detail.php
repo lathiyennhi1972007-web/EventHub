@@ -88,6 +88,16 @@ $speakerStmt = $pdo->prepare("
 
 $speakerStmt->execute([$eventId]);
 $speakers = $speakerStmt->fetchAll(PDO::FETCH_ASSOC);
+// Tự động xác định thứ tự tiếp theo của diễn giả
+$nextDisplayOrder = 1;
+
+foreach ($speakers as $speaker) {
+    $currentOrder = (int) ($speaker['display_order'] ?? 0);
+
+    if ($currentOrder >= $nextDisplayOrder) {
+        $nextDisplayOrder = $currentOrder + 1;
+    }
+}
 // Lấy danh sách diễn giả chưa được gắn vào sự kiện
 $availableSpeakerStmt = $pdo->prepare("
     SELECT
@@ -465,7 +475,7 @@ function formatEventDate($value): string
                         name="display_order"
                         id="display_order"
                         min="1"
-                        value="<?= count($speakers) + 1 ?>"
+                        value="<?= $nextDisplayOrder ?>"
                         required
                         style="width: 100%; padding: 12px; border: 1px solid #f0dce7; border-radius: 10px;"
                     >
@@ -551,14 +561,59 @@ function formatEventDate($value): string
                                             <?= e($speaker['speaker_role'] ?: 'Chưa cập nhật') ?>
                                         </td>
 
-                                        <td>
-                                            <a
-                                                href="../speakers/detail.php?id=<?= (int) $speaker['id'] ?>"
-                                                class="detail-back"
-                                            >
-                                                Xem hồ sơ
-                                            </a>
-                                        </td>
+                                        
+<td>
+    <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+
+        <a
+            href="../speakers/detail.php?id=<?= (int) $speaker['id'] ?>"
+            class="detail-back"
+        >
+            Xem hồ sơ
+        </a>
+
+        <form
+            method="POST"
+            action="remove_speaker.php"
+            onsubmit="return confirm('Bạn có chắc chắn muốn gỡ diễn giả này khỏi sự kiện không? Hồ sơ diễn giả sẽ được giữ nguyên.');"
+        >
+            <input
+                type="hidden"
+                name="event_id"
+                value="<?= (int) $event['id'] ?>"
+            >
+
+            <input
+                type="hidden"
+                name="speaker_id"
+                value="<?= (int) $speaker['id'] ?>"
+            >
+
+            <input
+                type="hidden"
+                name="csrf_token"
+                value="<?= e($_SESSION['csrf_token']) ?>"
+            >
+
+            <button
+                type="submit"
+                style="
+                    padding: 10px 16px;
+                    border-radius: 10px;
+                    background: #fff0f0;
+                    border: 1px solid #f5cccc;
+                    color: #d96b75;
+                    font-weight: 600;
+                    cursor: pointer;
+                "
+            >
+                Gỡ khỏi sự kiện
+            </button>
+        </form>
+
+    </div>
+</td>
+
                                     </tr>
                                 <?php endforeach; ?>
 
