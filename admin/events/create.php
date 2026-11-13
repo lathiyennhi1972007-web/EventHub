@@ -244,6 +244,57 @@ venueSelect.addEventListener('change', function () {
             'Địa điểm này chưa thiết lập giới hạn sức chứa.';
     }
 });
+    // Xem trước ảnh bìa sự kiện
+const coverInput = document.getElementById('cover_image');
+const coverPreview = document.getElementById('coverPreview');
+const coverPreviewContainer = document.getElementById('coverPreviewContainer');
+const removeCoverImage = document.getElementById('removeCoverImage');
+
+let coverObjectUrl = null;
+
+coverInput.addEventListener('change', function () {
+    const file = this.files[0];
+
+    if (!file) {
+        return;
+    }
+
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+    const maxSize = 5 * 1024 * 1024;
+
+    if (!allowedTypes.includes(file.type)) {
+        alert('Vui lòng chọn ảnh JPG, PNG hoặc WebP!');
+        this.value = '';
+        coverPreviewContainer.hidden = true;
+        return;
+    }
+
+    if (file.size > maxSize) {
+        alert('Ảnh không được vượt quá 5 MB!');
+        this.value = '';
+        coverPreviewContainer.hidden = true;
+        return;
+    }
+
+    if (coverObjectUrl) {
+        URL.revokeObjectURL(coverObjectUrl);
+    }
+
+    coverObjectUrl = URL.createObjectURL(file);
+    coverPreview.src = coverObjectUrl;
+    coverPreviewContainer.hidden = false;
+});
+
+removeCoverImage.addEventListener('click', function () {
+    coverInput.value = '';
+    coverPreview.src = '';
+    coverPreviewContainer.hidden = true;
+
+    if (coverObjectUrl) {
+        URL.revokeObjectURL(coverObjectUrl);
+        coverObjectUrl = null;
+    }
+});
 </script>
 
 </body>
