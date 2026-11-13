@@ -140,10 +140,16 @@ if (
         'image/webp' => 'webp'
     ];
 
-    if (!isset($allowedTypes[$mimeType])) {
-        redirectWithError('Chỉ chấp nhận ảnh JPG, PNG hoặc WebP!');
-    }
+   if (!isset($allowedTypes[$mimeType])) {
+    redirectWithError('Chỉ chấp nhận ảnh JPG, PNG hoặc WebP!');
+}
 
+// Kiểm tra nội dung ảnh có hợp lệ không
+$imageInfo = @getimagesize($file['tmp_name']);
+
+if ($imageInfo === false) {
+    redirectWithError('File ảnh không hợp lệ!');
+}
     // Thư mục lưu ảnh
     $uploadDir = dirname(__DIR__, 2) . '/uploads/events/';
 
